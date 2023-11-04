@@ -5,4 +5,5 @@ export const AppStyle = styled.div`
   justify-content: center;
   max-width: 560px;
   margin: 0 auto;
+  height: 100vh;
 `;

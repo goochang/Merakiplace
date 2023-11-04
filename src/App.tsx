@@ -4,6 +4,7 @@ import Body from './component/body/Body';
 
 import {GlobalStyle} from './global-style';
 import { AppStyle } from './AppTs';
+import Foot from './component/foot/Foot';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <div className="App">
           <Head />
           <Body />
+          <Foot />
         </div>
       </AppStyle>
     </>
