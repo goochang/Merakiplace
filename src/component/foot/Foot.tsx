@@ -10,10 +10,26 @@ import ico_Home_Fill from "../../assets/img/ico_Home_Fill.png";
 export interface FootProps {
   data: {},
 }
+
+const FootBtn = styled.div`
+text-align: center;
+width: 100%;
+height: 100%;
+font-size:10px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 9px;
+
+& > img {
+  line-height: 0px;
+}
+`;
+
 const Foot:FC = () => {  
   
   const { Tab, setTab } = useStore();
-
   const FootStyle = styled.div`
     position: fixed;
     bottom: 0;
@@ -24,7 +40,7 @@ const Foot:FC = () => {
     border-radius: 30px;
     display: flex;
     align-items: center;
-
+    z-index: 5;
     & > div:first-child {
       color: ${Tab ? "#fff" : "#6D6D6D"};
     }
@@ -32,21 +48,7 @@ const Foot:FC = () => {
       color: ${Tab ? "#6D6D6D" : "#fff"};
     }
   `;
-  const FootBtn = styled.div`
-    text-align: center;
-    width: 100%;
-    height: 100%;
-    font-size:10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
 
-    & > img {
-      line-height: 0px;
-    }
-  `;
 
   return (
     <FootStyle>
