@@ -1,19 +1,6 @@
 import styled from "styled-components";
 
-export const PopupStyle = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  
-  position: fixed;
-  width: calc(100vw - (100vw - 100%));
-  height:100vh;
-  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
-  top: 0;
-  left: 0;
-  z-index: 4;
-`;
+
 export const PopupMain = styled.div`
   display: flex;
   justify-content: space-between;

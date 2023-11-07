@@ -2,17 +2,19 @@ import { create } from "zustand";
 import { Post } from "./model/Post";
 
 interface PostState {
-    Posts: Post[];
+    Posts: any[];
     Tab: Boolean;
     Popup: Boolean;
     setTab: (data: Boolean) => void;
     setPopup: (data: Boolean) => void;
     setPostData: (data: Post) => void;
+    resetPostData: (data: Post) => void;
+    
 }
 export const useStore = create<PostState>((set) => ({
     Posts: [],
     Tab: true,
-    Popup: true,
+    Popup: false,
     setTab: (data) => {
       set(() => ({
         Tab: data
@@ -24,6 +26,17 @@ export const useStore = create<PostState>((set) => ({
       }))
     },
     setPostData: (data) => {
-      set((state) => ({ ...state, ...data })); // 무한스크롤 고려
+      // set((state:any) => ({...state, ...data})); // 무한스크롤 고려
+
+      set((state) => ({
+        Posts: [...state.Posts, data]
+      }));
+    },
+    resetPostData: (data) => {
+      // set((state:any) => ({...state, ...data})); // 무한스크롤 고려
+
+      set((state) => ({
+        Posts: [data]
+      }));
     },
   }));

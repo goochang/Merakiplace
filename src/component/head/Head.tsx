@@ -3,6 +3,7 @@ import searchLogo from "../../assets/img/search.png"
 import calendarLogo from "../../assets/img/calendar-check.png"
 
 import styled from "styled-components";
+import { useStore } from 'src/store';
 
 export const HeadStyle = styled.div`
   display: flex;
@@ -37,22 +38,28 @@ export const HeadMenu = styled.div`
 export interface HeadProps {
 }
 
-export default class Head extends React.Component<HeadProps> {
-  public render() {
-    return (
-        <HeadStyle>
-          <HeadMenu>
-            <img src={searchLogo} width={"16px"} height={"16px"} />
-            <span>전체 헤드라인</span>
-          </HeadMenu>
-          <HeadMenu>
-            <img src={calendarLogo} width={"16px"} height={"16px"} />
-            <span>전체 날짜</span>
-          </HeadMenu>
-          <HeadMenu>
-            <span>전체 국가</span>
-          </HeadMenu>
-        </HeadStyle>
-    );
+
+const Head:React.FC = () => {  
+  const { Popup, setPopup } = useStore();
+  
+  const headMenuClick = () => {
+    setPopup(!Popup);
   }
+  return (
+    <HeadStyle>
+      <HeadMenu onClick={() => {headMenuClick() }}>
+        <img src={searchLogo} width={"16px"} height={"16px"} />
+        <span>전체 헤드라인</span>
+      </HeadMenu>
+      <HeadMenu onClick={() => {headMenuClick() }}>
+        <img src={calendarLogo} width={"16px"} height={"16px"} />
+        <span>전체 날짜</span>
+      </HeadMenu>
+      <HeadMenu onClick={() => {headMenuClick() }}>
+        <span>전체 국가</span>
+      </HeadMenu>
+    </HeadStyle>
+  );
 }
+
+export default Head;

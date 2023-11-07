@@ -13,25 +13,36 @@ const Body:FC = () => {
 
   // nyt search api 호출
   useEffect(()=> {
-    fetch('https://api.nytimes.com/svc/search/v2/articlesearch.json?q=election&api-key=9vAymAHOJfBxQa85OJzPyu8P7wTkvpPY', {
+    fetch('https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=9vAymAHOJfBxQa85OJzPyu8P7wTkvpPY', {
         method : "GET"   
     }).then(res=>res.json()).then(res=>{
       console.log(res.response);
-      setPostData(res.response.docs);
-      setList(res.response.docs);
+      if(res.response && res.response.docs){
+        setPostData(res.response.docs);
+        // setList(res.response.docs);
+      }
     });              
+    console.log(Posts);
+
   }, []);
 
   let day = ["일","월","화","수","목","금","토"];
   let dateFormatter = (date:String) => {
+    if(!date) return;
     const _date = new Date(date.toString());
-    return `${_date.getFullYear()}.${_date.getMonth()+1}.${_date.getDate()} (${day[_date.getDay()]})`
+    return `${_date.getFullYear()}.${_date.getUTCMonth()+1}.${_date.getUTCDate()} (${day[_date.getDay()]})`
   }
+
+  function test(message:String): void {
+    console.log(message);
+  }
+  
 
   return (
     <BodyStyle>
         <div>
-            {List && List.map((post, index) => {
+          {
+            Posts && Posts[0] && Posts[0].map((post:any, index:any) => {
               return ( post && 
                 <PostStyle key={index}>
                   <div>
