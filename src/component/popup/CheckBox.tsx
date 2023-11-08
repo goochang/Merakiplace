@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { useEffect } from 'react';
+import { useStore } from 'src/store';
 import styled from "styled-components";
 
 export interface CheckBoxProps {
@@ -50,6 +52,19 @@ export const BasicCheckbox = ({id, text, onChange}: CheckBoxProps) => {
         onChange(e);
         setIsChecked(e.target.checked);
     };
+
+    const { Popup, Tab, hHeadLine, hDate, hCountry, sHeadLine, sDate, sCountry } = useStore();    
+
+    useEffect(()=> {
+        if(Popup){
+            if((Tab && hCountry.includes(id)) || (!Tab && sCountry.includes(id))){
+                setIsChecked(true);
+            }
+        } else { // 팝업 닫을때
+            setIsChecked(false);
+        }
+      }, [Popup]);
+      
     return (
       <CheckBox key={id} text={text} id={id} checked={isChecked} onChange={Changehandler} />
     );

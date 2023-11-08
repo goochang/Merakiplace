@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useStore } from 'src/store';
 import styled from "styled-components";
 import CheckBox, { BasicCheckbox } from './CheckBox';
@@ -64,13 +64,14 @@ const PopupStyle = styled.div<{flag: number}>`
 `;
 const Popup: FC = () => {
 
-  const { Popup, setPopup, setPostData, resetPostData } = useStore();
+  const { Popup, Tab, hHeadLine, hDate, hCountry, sHeadLine, sDate, sCountry,
+    setPopup, setPostData, resetPostData, setHeadLine, setDate, setCountry } = useStore();
 
   const checkList = ["대한민국", "중국", "일본", "미국", "북한", "러시아", "프랑스", "영국"];
   const checkListENG = ["South Korea", "China", "Japan", "United States", "North Korea", "Russia", "France", "United Kingdom"];
+  const [headLine, setHeadLine_] = useState<string>("");
   const [checkItems, setCheckItems] = useState(new Set<number>);
   const [startDate, setStartDate] = useState<Date | null>(null);
-  const [headLine, setHeadLine] = useState<string>("");
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e);
@@ -97,10 +98,12 @@ const Popup: FC = () => {
 
       if(checkItems || startDate){ url+= "&"; }
     }
-    if(checkItems){ 
+
+    let country_arr:any[];
+    if(checkItems && checkItems.size){ 
       url+= "q=&";
-      const arr = Array.from(checkItems);
-      arr.forEach((val, index) => {
+      country_arr = Array.from(checkItems).sort((a, b) => a - b);
+      country_arr.forEach((val, index) => {
         if(index > 0) url += " OR ";
         url+= `country:${checkListENG[val]}`;
       });
@@ -118,11 +121,40 @@ const Popup: FC = () => {
       console.log(res.response);
       if(res.response && res.response.docs){
         resetPostData(res.response.docs);
+        // 헤더
+        setHeadLine(headLine ? headLine : "");
+        setCountry(checkItems.size ? country_arr : []);
+        setDate(startDate ? startDate : null);
         setPopup(false);
       }
     });              
   }
 
+  useEffect(()=> {
+    console.log(Popup);
+    if(Popup){
+      setHeadLine_(Tab ? hHeadLine : sHeadLine);
+      const countrySet: Set<number> | null = new Set<number>(Tab ? hCountry : sCountry);
+      if(countrySet !== null){
+        setCheckItems(countrySet);
+      }
+      setStartDate(Tab ? hDate : sDate);
+    } else { // 팝업 닫을때
+      if(headLine !== ""){
+        setHeadLine_("");
+      }
+      if(checkItems.size){
+        setCheckItems(new Set<number>);
+      }
+      if(startDate){
+        setStartDate(null);
+      }
+    }
+  }, [Popup]);
+
+  const handleDateChangeRaw = (e:React.KeyboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+  }
   return (
     <PopupStyle flag={Popup ? 1 : 0} onClick={headMenuClick}>
       <GlobalStyle />
@@ -130,7 +162,7 @@ const Popup: FC = () => {
         <PopupContent>
           <PopupField>
             <PopupFieldTitle>헤드라인</PopupFieldTitle>
-            <PopupInput headLine={headLine} setHeadLine={setHeadLine} />
+            <PopupInput headLine={headLine} setHeadLine={setHeadLine_} />
           </PopupField>
           <PopupField>
             <PopupFieldTitle>날짜</PopupFieldTitle>
@@ -143,6 +175,7 @@ const Popup: FC = () => {
               placeholderText='날짜를 선택해주세요.'
               closeOnScroll={true} // 스크롤을 움직였을 때 자동으로 닫히도록 설정 기본값 false
               onChange={(date: Date) => setStartDate(date)}
+              onKeyDown={handleDateChangeRaw} 
             />
             {/* <PopupFieldInput id='input2' placeholder='날짜를 선택해주세요' /> */}
           </PopupField>

@@ -12,4 +12,7 @@ export const GlobalStyle = createGlobalStyle`
     .react-datepicker__triangle {
         display: none;
     }
+    .App {
+        width: 100%;
+    }
 `;

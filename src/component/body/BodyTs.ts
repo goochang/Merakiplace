@@ -3,7 +3,8 @@ import styled from "styled-components";
 export const BodyStyle = styled.div`
   background-color: #F0F1F4;
   padding: 20px;
-  min-height: calc(100vh - 60px);  
+  min-height: calc(100vh - 60px); 
+  border-top: 1px solid #C4C4C4;
 `;
 
 export const PostStyle = styled.div`

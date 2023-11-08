@@ -29,7 +29,8 @@ const PopupInput:FC<IPopupInputProps> =  (props: IPopupInputProps) => {
     const onInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setHeadLine(e.target.value);
       }, [setHeadLine]);
-      
+    // string만 체크
+    
     return (
         <PopupFieldInput value={headLine} onChange={onInput} id='input1' placeholder='검색하실 헤드라인을 입력해주세요.' />
     );
