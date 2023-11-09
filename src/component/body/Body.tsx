@@ -18,12 +18,18 @@ const Body: FC = () => {
     setPageUp, setPostData, resetPostData } = useStore();
   const Scrabs = useStorePersist(state => state.Scrabs);
   const setScrabsData = useStorePersist(state => state.setScrabsData);
+  const [ScrabSlice, setScrabSlice] = useState<any[]>([]);
   const [ref, inView] = useInView({
     // triggerOnce: false, // 한 번만 트리거하고 그 이후에는 관찰 중지
   });
   const [initialized, setInitialized] = useState(false);
   const checkListENG = ["South Korea", "China", "Japan", "United States", "North Korea", "Russia", "France", "United Kingdom"];
 
+  function ScrabLoadMore(){
+    const arr_length = ScrabSlice.length;
+    const slicedScrabs:any[] = Scrabs.slice(arr_length, arr_length+6);
+    setScrabSlice([...ScrabSlice, ...slicedScrabs]);
+  }
   // nyt search api 호출
   useEffect(() => {
     if (!initialized) {
@@ -35,6 +41,9 @@ const Body: FC = () => {
           resetPostData(res.response.docs);
         }
       });
+
+      ScrabLoadMore();
+
       setInitialized(true);
     }
     console.log(Posts);
@@ -56,47 +65,55 @@ const Body: FC = () => {
     return str;
   }
 
+  function PostLoadMore(){
+    const page = Tab ? hPage : sPage;
+    const headLine = Tab ? hHeadLine : sHeadLine;
+    const date = Tab ? hDate : sDate;
+    const country:any[] = Tab ? hCountry : sCountry;
+    let url = `https://api.nytimes.com/svc/search/v2/articlesearch.json?page=${page+1}`
+    if (headLine) {
+      url+= `&fq=headline:${headLine.split(" ").join("+")}*`;
+    } else {
+      url+= "&fq=";
+    }
+
+    if (country && country.length) {
+      if (headLine) {
+        url+= "&";   
+      }
+      country.forEach((val, index) => {
+        if (index > 0) url += " OR ";
+        url += `country:${checkListENG[val]}`;
+      });
+    }
+    if (date) {
+      if(country && country.length){
+        url+= "&";        
+      }
+      url += `pub_date:(${date.getFullYear()}-${padNumber(date.getMonth()+1)}-${padNumber(date.getDate())})`;
+    }
+
+    url += "&api-key=9vAymAHOJfBxQa85OJzPyu8P7wTkvpPY";
+
+    fetch(url, {
+      method: "GET"
+    }).then(res => res.json()).then(res => {
+      console.log(res.response);
+      if (res.response && res.response.docs) {
+        setPostData(res.response.docs);
+      }
+    });
+  }
   useEffect(() => {
     console.log(inView);
     if (inView) {
       setPageUp();
-      const page = Tab ? hPage : sPage;
-      const headLine = Tab ? hHeadLine : sHeadLine;
-      const date = Tab ? hDate : sDate;
-      const country:any[] = Tab ? hCountry : sCountry;
-      let url = `https://api.nytimes.com/svc/search/v2/articlesearch.json?page=${page+1}`
-      if (headLine) {
-        url+= `&fq=headline:${headLine.split(" ").join("+")}*`;
+      if(Tab){
+        PostLoadMore();
       } else {
-        url+= "&fq=";
+        ScrabLoadMore();
       }
-
-      if (country && country.length) {
-        if (headLine) {
-          url+= "&";   
-        }
-        country.forEach((val, index) => {
-          if (index > 0) url += " OR ";
-          url += `country:${checkListENG[val]}`;
-        });
-      }
-      if (date) {
-        if(country && country.length){
-          url+= "&";        
-        }
-        url += `pub_date:(${date.getFullYear()}-${padNumber(date.getMonth()+1)}-${padNumber(date.getDate())})`;
-      }
-
-      url += "&api-key=9vAymAHOJfBxQa85OJzPyu8P7wTkvpPY";
-
-      fetch(url, {
-        method: "GET"
-      }).then(res => res.json()).then(res => {
-        console.log(res.response);
-        if (res.response && res.response.docs) {
-          setPostData(res.response.docs);
-        }
-      });
+      
     }
     console.log(Posts);
     console.log(Scrabs);
@@ -134,13 +151,13 @@ const Body: FC = () => {
               )
             })
           ) : (
-            Scrabs.length ? Scrabs.map((post: any, index: any) => {
-              const isInArray = Scrabs.some(scrab =>
+            ScrabSlice.length ? ScrabSlice.map((post: any, index: any) => {
+              const isInArray = ScrabSlice.some(scrab =>
                 scrab._id === post._id
               );
               const starImg = isInArray ? star2 : star;
               return (post &&
-                <PostStyle key={index} ref={index === Posts.length - 1 ? ref : null}>
+                <PostStyle key={index} ref={index === ScrabSlice.length - 1 ? ref : null}>
                   <PostHead>
                     <PostTitle>{post.headline && post.headline.main}</PostTitle>
                     <img onClick={(e) => { ScrabClick(e, post, index) }} src={starImg} width={"16px"} height={"16px"} />
