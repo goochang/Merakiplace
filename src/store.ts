@@ -21,6 +21,7 @@ interface PostState {
   setCountry: (data: any[]) => void;
   hPage: number;
   sPage: number;
+  setPage: (data: number) => void;
   setPageUp: () => void;
 }
 export const useStore = create<PostState>((set) => ({
@@ -79,6 +80,15 @@ export const useStore = create<PostState>((set) => ({
         return { hCountry: data }; // 홈
       } else {
         return { sCountry: data }; // 스크랩
+      }
+    });
+  },
+  setPage: (data) => {
+    set((state) => {
+      if (state.Tab) {
+        return { hPage: data }; // 홈
+      } else {
+        return { sPage: data }; // 스크랩
       }
     });
   },

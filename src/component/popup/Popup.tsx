@@ -65,7 +65,7 @@ const PopupStyle = styled.div<{flag: number}>`
 const Popup: FC = () => {
 
   const { Popup, Tab, hHeadLine, hDate, hCountry, sHeadLine, sDate, sCountry,
-    setPopup, setPostData, resetPostData, setHeadLine, setDate, setCountry } = useStore();
+    setPopup, setPostData, setPage, resetPostData, setHeadLine, setDate, setCountry } = useStore();
 
   const checkList = ["대한민국", "중국", "일본", "미국", "북한", "러시아", "프랑스", "영국"];
   const checkListENG = ["South Korea", "China", "Japan", "United States", "North Korea", "Russia", "France", "United Kingdom"];
@@ -85,23 +85,32 @@ const Popup: FC = () => {
     console.log(checkItems);
   };
 
+  function padNumber(number:number) {
+    const str = number.toString();
+    if (str.length === 1) {
+      return `0${str}`;       // 일의 자리 숫자일 경우 "0"을 앞에 추가
+    }
+    return str;
+  }
+
   const headMenuClick = (e: React.MouseEvent) => {
     if (e.target !== e.currentTarget) return;
     setPopup(!Popup);
   }
 
   const SearchBtn = (e:React.MouseEvent<HTMLInputElement>) => {
-    let url= "https://api.nytimes.com/svc/search/v2/articlesearch.json?q="
+    let url= "https://api.nytimes.com/svc/search/v2/articlesearch.json?page=1"
     if(headLine){
-      // url+= "fq=headline:" + headLine.split("").join("+") + "";
-      url+= `${headLine.split(" ").join("+")}`;
-
-      if(checkItems || startDate){ url+= "&"; }
+      url+= `&fq=headline:${headLine.split(" ").join("+")}*`;
+    } else {
+      url+= "&fq=";
     }
 
     let country_arr:any[];
     if(checkItems && checkItems.size){ 
-      url+= "q=&";
+      if (headLine) {
+        url+= "&";   
+      }
       country_arr = Array.from(checkItems).sort((a, b) => a - b);
       country_arr.forEach((val, index) => {
         if(index > 0) url += " OR ";
@@ -110,7 +119,10 @@ const Popup: FC = () => {
       // if(startDate){ url+= "&"; }
     }
     if(startDate){
-      url+=`&fq=pub_date:(${startDate.getFullYear()}-${startDate.getMonth()+1}-${startDate.getDate()})`
+      if(checkItems && checkItems.size){ 
+        url+= "&";
+      }
+      url+=`pub_date:(${startDate.getFullYear()}-${padNumber(startDate.getMonth()+1)}-${padNumber(startDate.getDate())})`;
     }
     
     url+="&api-key=9vAymAHOJfBxQa85OJzPyu8P7wTkvpPY";
@@ -120,6 +132,7 @@ const Popup: FC = () => {
     }).then(res=>res.json()).then(res=>{
       console.log(res.response);
       if(res.response && res.response.docs){
+        setPage(1);
         resetPostData(res.response.docs);
         // 헤더
         setHeadLine(headLine ? headLine : "");
@@ -131,8 +144,7 @@ const Popup: FC = () => {
   }
 
   useEffect(()=> {
-    console.log(Popup);
-    if(Popup){
+    if(Popup){ // 팝업 열때
       setHeadLine_(Tab ? hHeadLine : sHeadLine);
       const countrySet: Set<number> | null = new Set<number>(Tab ? hCountry : sCountry);
       if(countrySet !== null){
