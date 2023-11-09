@@ -11,10 +11,21 @@ export const PostStyle = styled.div`
   background-color: white;
   margin-bottom: 8px;
   padding: 10px 20px;
+
+  min-height: 104px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
   &:last-child {
     margin-bottom: 70px;
   }
 `;
+export const PostHead = styled.div`
+display:flex;
+justify-content: space-between;
+`;
+
 export const PostTitle = styled.div`
   font-size: 21px;
   color: #000000;

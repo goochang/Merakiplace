@@ -24,20 +24,20 @@ const CheckboxStyle = styled.div`
     }
 `;
 
+const LabelStyle = styled.label<{flag: number}>`
+    padding: 6px 12px;
+    border-radius: 30px;
+    border:1px solid ${props => (props.flag ? "#82B0F4" : "#f2f2f2")};
+    color: ${props => (props.flag ? "#fff" : "#6D6D6D")};
+    background-color: ${props => (props.flag ? "#82B0F4" : "#fff")};
+`;
 
 const CheckBox: React.FC<CheckBoxProps>= (props:CheckBoxProps) => {
     const { checked, text, id, onChange } = props;
-    const LabelStyle = styled.label`
-        padding: 6px 12px;
-        border-radius: 30px;
-        border:1px solid ${checked ? "#82B0F4" : "#f2f2f2"};
-        color: ${checked ? "#fff" : "#6D6D6D"};
-        background-color: ${checked ? "#82B0F4" : "#fff"};
-    `;
 
     return (
         <CheckboxStyle>
-            <LabelStyle htmlFor={id.toString()}>{text}</LabelStyle>
+            <LabelStyle flag={checked ? 1 : 0} htmlFor={id.toString()}>{text}</LabelStyle>
             <input id={id.toString()} type="checkbox" checked={checked} onChange={(e) => onChange(e)} />
         </CheckboxStyle>
     );

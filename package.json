@@ -18,7 +18,8 @@
     "styled-components": "^6.1.0",
     "typescript": "^4.4.2",
     "web-vitals": "^2.1.0",
-    "zustand": "^4.4.6"
+    "zustand": "^4.4.6",
+    "zustand-persist": "^0.4.0"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -1,7 +1,12 @@
 import React, { FC, useRef } from 'react';
-import { BodyStyle, PostDate, PostInfo, PostStyle, PostSub, PostTitle } from './BodyTs';
-import { useStore } from 'src/store';
+import { BodyStyle, PostDate, PostHead, PostInfo, PostStyle, PostSub, PostTitle } from './BodyTs';
+import { useStore, useStorePersist } from 'src/store';
 import { useInView } from 'react-intersection-observer';
+
+import star from "../../assets/img/star.png";
+import star2 from "../../assets/img/star-fill.png";
+import NoScrab from './NoScrab';
+
 export interface BodyProps {
   data: {},
 }
@@ -9,7 +14,9 @@ const Body:FC = () => {
   
   const { useEffect, useState } = React;
   const [List, setList] = useState<any[]>([]);
-  const { Tab, Posts, hPage, sPage, setPageUp, setPostData } = useStore();
+  const {Tab, Posts, hPage, sPage, setPageUp, setPostData, resetPostData } = useStore();
+  const Scrabs = useStorePersist(state => state.Scrabs);
+  const setScrabsData = useStorePersist(state => state.setScrabsData);
   const [ref, inView] = useInView({
     // triggerOnce: false, // 한 번만 트리거하고 그 이후에는 관찰 중지
   });
@@ -19,13 +26,12 @@ const Body:FC = () => {
   // nyt search api 호출
   useEffect(()=> {
     if (!initialized) {
-      // 글을 불러오는 비동기 작업 수행
       fetch('https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=9vAymAHOJfBxQa85OJzPyu8P7wTkvpPY', {
         method : "GET"   
       }).then(res=>res.json()).then(res=>{
         console.log(res.response);
         if(res.response && res.response.docs){
-          setPostData(res.response.docs);
+          resetPostData(res.response.docs);
         }
       });              
       setInitialized(true);
@@ -57,29 +63,66 @@ const Body:FC = () => {
       });              
     }
     console.log(Posts);
+    console.log(Scrabs);
 
   }, [inView]);
+
+  const ScrabClick = (e: React.MouseEvent, post:any, index:number) => {
+    setScrabsData(post);
+  }
 
   return (
     <BodyStyle>
         <div>
           {
-            Posts && Posts.map((post:any, index:any) => {
-              return ( post && 
-                <PostStyle key={index} ref={index === Posts.length - 1 ? ref : null}>
-                  <div>
-                    <PostTitle>{post.headline && post.headline.main}</PostTitle>
-                  </div>
-                  <PostSub> 
-                    <PostInfo>
-                      <span>{post.source}</span>
-                      <span>{post.byline && post.byline.original}</span>
-                    </PostInfo>
-                    <PostDate>{dateFormatter(post.pub_date)}</PostDate>
-                  </PostSub>
-                </PostStyle>
-              )
-            })}
+            Tab ? (
+              Posts && Posts.map((post:any, index:any) => {
+                const isInArray = Scrabs.some(scrab => 
+                  scrab._id === post._id
+                );
+                const starImg = isInArray ? star2 : star;
+                return ( post && 
+                  <PostStyle key={index} ref={index === Posts.length - 1 ? ref : null}>
+                    <PostHead>
+                      <PostTitle>{post.headline && post.headline.main}</PostTitle>
+                      <img onClick={(e) => {ScrabClick(e, post, index)} } src={starImg} width={"16px"} height={"16px"} />
+                    </PostHead>
+                    <PostSub> 
+                      <PostInfo>
+                        <span>{post.source}</span>
+                        <span>{post.byline && post.byline.original}</span>
+                      </PostInfo>
+                      <PostDate>{dateFormatter(post.pub_date)}</PostDate>
+                    </PostSub>
+                  </PostStyle>
+                )
+              })
+            ) : (
+              Scrabs.length ? Scrabs.map((post:any, index:any) => {
+                const isInArray = Scrabs.some(scrab => 
+                  scrab._id === post._id
+                );
+                const starImg = isInArray ? star2 : star;
+                return ( post && 
+                  <PostStyle key={index} ref={index === Posts.length - 1 ? ref : null}>
+                    <PostHead>
+                      <PostTitle>{post.headline && post.headline.main}</PostTitle>
+                      <img onClick={(e) => {ScrabClick(e, post, index)} } src={starImg} width={"16px"} height={"16px"} />
+                    </PostHead>
+                    <PostSub> 
+                      <PostInfo>
+                        <span>{post.source}</span>
+                        <span>{post.byline && post.byline.original}</span>
+                      </PostInfo>
+                      <PostDate>{dateFormatter(post.pub_date)}</PostDate>
+                    </PostSub>
+                  </PostStyle>
+                )
+              }) : <NoScrab />
+            )
+            
+          }
+          
         </div>
       </BodyStyle>
   )
