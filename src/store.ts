@@ -7,17 +7,20 @@ interface PostState {
     Popup: Boolean;
     setTab: (data: Boolean) => void;
     setPopup: (data: Boolean) => void;
-    setPostData: (data: Post) => void;
+    setPostData: (data: any[]) => void;
     resetPostData: (data: Post) => void;
     hHeadLine: string;
     hDate: Date | null;
     hCountry: any[];
-    setHeadLine: (data: string) => void;
-    setDate: (data: Date | null) => void;
-    setCountry: (data: any[]) => void;
     sHeadLine: string;
     sDate: Date | null;
     sCountry: any[];
+    setHeadLine: (data: string) => void;
+    setDate: (data: Date | null) => void;
+    setCountry: (data: any[]) => void;
+    hPage: number;
+    sPage: number;
+    setPageUp: () => void;
 }
 export const useStore = create<PostState>((set) => ({
     Posts: [],
@@ -29,6 +32,8 @@ export const useStore = create<PostState>((set) => ({
     sHeadLine: "",
     sDate: null,
     sCountry: [],
+    hPage:1,
+    sPage:1,
     setTab: (data) => {
       set(() => ({
         Tab: data
@@ -40,10 +45,8 @@ export const useStore = create<PostState>((set) => ({
       }))
     },
     setPostData: (data) => {
-      // set((state:any) => ({...state, ...data})); // 무한스크롤 고려
-
       set((state) => ({
-        Posts: [...state.Posts, data]
+        Posts: [...state.Posts, ...data]
       }));
     },
     resetPostData: (data) => {
@@ -75,6 +78,15 @@ export const useStore = create<PostState>((set) => ({
           return { hCountry: data }; // 홈
         } else {
           return { sCountry: data }; // 스크랩
+        }
+      });
+    },
+    setPageUp: () => {
+      set((state) => {
+        if (state.Tab) {
+          return { hPage: state.hPage+1 }; // 홈
+        } else {
+          return { sPage: state.sPage+1 }; // 스크랩
         }
       });
     },

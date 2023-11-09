@@ -11,6 +11,9 @@ export const PostStyle = styled.div`
   background-color: white;
   margin-bottom: 8px;
   padding: 10px 20px;
+  &:last-child {
+    margin-bottom: 70px;
+  }
 `;
 export const PostTitle = styled.div`
   font-size: 21px;

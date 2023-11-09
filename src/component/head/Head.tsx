@@ -16,13 +16,13 @@ export const HeadStyle = styled.div`
   color: #495057;
   height: 60px;
 `;
-export const HeadMenu = styled.div<{isActive:Boolean}>`
-  border: 1px solid ${props => (props.isActive ? "#82B0F4" :"#C4C4C4")};
+export const HeadMenu = styled.div<{isactive:number}>`
+  border: 1px solid ${props => (props.isactive ? "#82B0F4" :"#C4C4C4")};
   border-radius: 30px;
   margin-right:12px;
   padding: 6px 12px;
   font-size: 14px;
-  color: ${props => (props.isActive ? "#3478F6" :"#6D6D6D")};
+  color: ${props => (props.isactive ? "#3478F6" :"#6D6D6D")};
   display: flex;
   align-items: center;
 
@@ -63,17 +63,18 @@ const Head:React.FC = () => {
   const isDate = Tab ? hDate !== null : sDate !== null;
   const dateImage = isDate ? calendarLogo2 : calendarLogo;
   const isCountry = Tab ? hCountry.length > 0 : sCountry.length > 0;
+
   return (
     <HeadStyle>
-      <HeadMenu isActive={isHeadLine} onClick={() => {headMenuClick() }}>
+      <HeadMenu isactive={isHeadLine ? 1 : 0} onClick={() => {headMenuClick() }}>
         <img src={searchImage} width={"16px"} height={"16px"} />
         <span>{ Tab ? (hHeadLine ? hHeadLine : "전체 헤드라인") : (sHeadLine ? sHeadLine : "전체 헤드라인") }</span>
       </HeadMenu>
-      <HeadMenu isActive={Tab ? hDate !== null : sDate !== null} onClick={() => {headMenuClick() }}>
+      <HeadMenu isactive={isDate ? 1 : 0} onClick={() => {headMenuClick() }}>
         <img src={dateImage} width={"16px"} height={"16px"} />
         <span>{ Tab ? (hDate ? formatDate(hDate) : "전체 날짜") : (sDate ? formatDate(sDate) : "전체 날짜") }</span>
       </HeadMenu>
-      <HeadMenu isActive={isCountry} onClick={() => {headMenuClick() }}>
+      <HeadMenu isactive={isCountry ? 1 : 0} onClick={() => {headMenuClick() }}>
         <span>{ Tab ? (hCountry.length ? (hCountry.length-1 ? (`${country[hCountry[0]]} 외 ${hCountry.length-1}개`) : country[hCountry[0]]) : "전체 국가") : 
         (sCountry.length ? (sCountry.length-1 ? (`${country[sCountry[0]]} 외 ${sCountry.length-1}개`) : country[sCountry[0]]) : "전체 국가") }</span>
       </HeadMenu>
