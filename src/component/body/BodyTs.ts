@@ -60,6 +60,12 @@ export const PostInfo = styled.div`
     max-width: 170px;
     max-height: 100px;
   }
+
+  @media (max-width: 560px){
+    span {
+      max-width: 80px;
+    }
+  }
 `;
 export const PostDate = styled.div`
   color: #6D6D6D;

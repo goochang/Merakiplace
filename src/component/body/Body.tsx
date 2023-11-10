@@ -210,7 +210,7 @@ const Body: FC = () => {
                 <PostStyle key={index} ref={index === ScrabSlice.length - 1 ? ref : null}>
                   <PostHead>
                     <PostTitle  onClick={()=>{ window.location.href = post.web_url; }}>
-                      {post.headline && post.headline.main}
+                      <span>{post.headline && post.headline.main}</span>
                     </PostTitle>
                     <img onClick={(e) => { ScrabClick(e, post, index, isInArray) }} src={starImg} width={"16px"} height={"16px"} />
                   </PostHead>

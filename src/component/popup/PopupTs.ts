@@ -19,6 +19,11 @@ export const PopupMain = styled.div`
 
   color: #011627;
   padding: 20px;
+  z-index: 10;
+  
+  @media (max-width: 560px){
+    width: 360px;
+  }
 `;
 export const PopupContent = styled.div`
   display: flex;

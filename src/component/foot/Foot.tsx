@@ -40,7 +40,7 @@ const Foot:FC = () => {
     border-radius: 30px;
     display: flex;
     align-items: center;
-    z-index: 5;
+    // z-index: 5;
     & > div:first-child {
       color: ${Tab ? "#fff" : "#6D6D6D"};
     }
