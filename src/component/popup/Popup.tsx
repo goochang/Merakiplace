@@ -172,8 +172,8 @@ const Popup: FC = () => {
     }
 
     // 검색값 없을때
-    if(true){
-
+    if(!headLine && !startDate && !checkItems.size && scrab_arr.length == 0){
+      scrab_arr = Scrabs.slice(0,6);
     }
     setScrab(scrab_arr);
 
