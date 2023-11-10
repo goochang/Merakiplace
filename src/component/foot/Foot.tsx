@@ -27,31 +27,29 @@ gap: 9px;
 }
 `;
 
+const FootStyle = styled.div<{$flag:number}>`
+  position: fixed;
+  bottom: 0;
+  background-color: #000;
+  height: 85px;
+  width: 100%;
+  max-width: 560px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  // z-index: 5;
+  & > div:first-child {
+    color: ${props => (props.$flag ? "#fff" : "#6D6D6D")};
+  }
+  & > div:last-child {
+    color: ${props => (props.$flag ? "#6D6D6D" : "#fff")};
+  }
+`;
 const Foot:FC = () => {  
   
   const { Tab, setTab } = useStore();
-  const FootStyle = styled.div`
-    position: fixed;
-    bottom: 0;
-    background-color: #000;
-    height: 85px;
-    width: 100%;
-    max-width: 560px;
-    border-radius: 30px;
-    display: flex;
-    align-items: center;
-    // z-index: 5;
-    & > div:first-child {
-      color: ${Tab ? "#fff" : "#6D6D6D"};
-    }
-    & > div:last-child {
-      color: ${Tab ? "#6D6D6D" : "#fff"};
-    }
-  `;
-
-
   return (
-    <FootStyle>
+    <FootStyle $flag={Tab ? 1 : 0}>
       <FootBtn onClick={() => setTab(true) }>
         <img src={Tab ? ico_Home_Fill : ico_Home} width={"20px"} height={"22px"} />
         <span>홈</span>

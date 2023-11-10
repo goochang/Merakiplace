@@ -10,7 +10,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/esm/locale'; //한국어 설정
 import { PopupContent, PopupField, PopupFieldCountry, PopupFieldInput, PopupFieldTitle, PopupFooter, PopupFooterBtn, PopupMain } from './PopupTs';
 import PopupInput from './PopupInput';
-import { start } from 'repl';
 
 export interface FootProps {
   data: {},
@@ -48,8 +47,8 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const PopupStyle = styled.div<{flag: number}>`
-  display: ${props => (props.flag ? "flex" : "none")};
+const PopupStyle = styled.div<{$flag: number}>`
+  display: ${props => (props.$flag ? "flex" : "none")};
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -75,7 +74,6 @@ const Popup: FC = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e);
     const id = Number(e.target.id);
     if (e.target.checked) {
       checkItems.add(id);
@@ -83,7 +81,6 @@ const Popup: FC = () => {
       checkItems.delete(id);
     }
     setCheckItems(checkItems);
-    console.log(checkItems);
   };
 
   function padNumber(number:number) {
@@ -132,7 +129,6 @@ const Popup: FC = () => {
     fetch(url, {
         method : "GET"   
     }).then(res=>res.json()).then(res=>{
-      console.log(res.response);
       if(res.response && res.response.docs){
         setPage(1);
         resetPostData(res.response.docs);
@@ -179,7 +175,6 @@ const Popup: FC = () => {
     if(true){
 
     }
-    console.log(scrab_arr);
     setScrab(scrab_arr);
 
     setPage(1);
@@ -223,7 +218,7 @@ const Popup: FC = () => {
     e.preventDefault();
   }
   return (
-    <PopupStyle flag={Popup ? 1 : 0} onClick={headMenuClick}>
+    <PopupStyle $flag={Popup ? 1 : 0} onClick={headMenuClick}>
       <GlobalStyle />
       <PopupMain>
         <PopupContent>

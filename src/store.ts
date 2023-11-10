@@ -66,7 +66,6 @@ export const useStore = create<PostState>((set) => ({
     }));
   },
   setScrabSlice: (data) => { // 무한스크롤로 6개씩 불러오는용
-    console.log(data);
     set((state) => ({
       ScrabSlice: [...state.ScrabSlice, ...data]
     }));

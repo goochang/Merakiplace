@@ -114,7 +114,6 @@ const Body: FC = () => {
     fetch(url, {
       method: "GET"
     }).then(res => res.json()).then(res => {
-      console.log(res.response);
       if (res.response && res.response.docs) {
         setPostData(res.response.docs);
       }
@@ -127,7 +126,6 @@ const Body: FC = () => {
       fetch('https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=9vAymAHOJfBxQa85OJzPyu8P7wTkvpPY', {
         method: "GET"
       }).then(res => res.json()).then(res => {
-        console.log(res.response);
         if (res.response && res.response.docs) {
           resetPostData(res.response.docs);
         }
@@ -139,9 +137,6 @@ const Body: FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(inView);
-    console.log(Scrabs);
-    console.log(ScrabSlice);
     if (inView) {
       setPageUp();
       if(Tab){
