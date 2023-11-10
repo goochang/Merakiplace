@@ -161,11 +161,11 @@ const Body: FC = () => {
     if(isIn){
       setScrab(ScrabSlice.filter((scrab: { _id: any; }) => scrab._id !== post._id));
       toast.info("스크랩이 취소되었습니다.", {
-        position: toast.POSITION.BOTTOM_RIGHT,
+        position: toast.POSITION.TOP_RIGHT,
       });
     } else {
       toast.info("스크랩 되었습니다.", {
-        position: toast.POSITION.BOTTOM_RIGHT,
+        position: toast.POSITION.TOP_RIGHT,
       });
 
     }
