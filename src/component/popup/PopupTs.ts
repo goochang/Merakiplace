@@ -5,7 +5,6 @@ export const PopupMain = styled.div`
   display: flex;
   justify-content: space-between;
 
-  
   position: relative;
 
   width: 520px;

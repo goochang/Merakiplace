@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
-import { useStore } from 'src/store';
+import { useStore, useStorePersist } from 'src/store';
 import styled from "styled-components";
 import CheckBox, { BasicCheckbox } from './CheckBox';
 import { createGlobalStyle } from 'styled-components';
@@ -64,8 +64,9 @@ const PopupStyle = styled.div<{flag: number}>`
 `;
 const Popup: FC = () => {
 
-  const { Popup, Tab, hHeadLine, hDate, hCountry, sHeadLine, sDate, sCountry,
-    setPopup, setPostData, setPage, resetPostData, setHeadLine, setDate, setCountry } = useStore();
+  const { Popup, Tab, hHeadLine, hDate, hCountry, sHeadLine, sDate, sCountry, ScrabSlice,
+    setPopup, setPostData, setPage, resetPostData, setHeadLine, setDate, setCountry, setScrab } = useStore();
+  const Scrabs = useStorePersist(state => state.Scrabs);
 
   const checkList = ["대한민국", "중국", "일본", "미국", "북한", "러시아", "프랑스", "영국"];
   const checkListENG = ["South Korea", "China", "Japan", "United States", "North Korea", "Russia", "France", "United Kingdom"];
@@ -98,7 +99,7 @@ const Popup: FC = () => {
     setPopup(!Popup);
   }
 
-  const SearchBtn = (e:React.MouseEvent<HTMLInputElement>) => {
+  const searchPost = () => {
     let url= "https://api.nytimes.com/svc/search/v2/articlesearch.json?page=1"
     if(headLine){
       url+= `&fq=headline:${headLine.split(" ").join("+")}*`;
@@ -112,11 +113,12 @@ const Popup: FC = () => {
         url+= "&";   
       }
       country_arr = Array.from(checkItems).sort((a, b) => a - b);
+      url+= "(";  
       country_arr.forEach((val, index) => {
         if(index > 0) url += " OR ";
-        url+= `country:${checkListENG[val]}`;
+        url+= `glocations:("${checkListENG[val]}")`;
       });
-      // if(startDate){ url+= "&"; }
+      url+= ")";  
     }
     if(startDate){
       if(checkItems && checkItems.size){ 
@@ -140,7 +142,60 @@ const Popup: FC = () => {
         setDate(startDate ? startDate : null);
         setPopup(false);
       }
-    });              
+    });     
+  }
+  const searchScrab = () => {
+    let scrab_arr = [];
+    let target_arr = Scrabs; // 대상 배열
+    if(headLine){
+      scrab_arr = target_arr.filter((scrab) => {
+        if (scrab.headline && scrab.headline.main) {
+          return scrab.headline.main.includes(headLine);
+        }
+        return false; 
+      });
+      target_arr = scrab_arr;
+    }
+    if(startDate){
+      scrab_arr = target_arr.filter((scrab) => {
+        if (scrab.pub_date) {
+          const date1 = new Date(scrab.pub_date);
+          const date2 = new Date(startDate);
+          return (date1.getFullYear() === date2.getFullYear() &&
+          date1.getMonth() === date2.getMonth() &&
+          date1.getDate() === date2.getDate());
+        }
+        return false; 
+      });
+    }
+    scrab_arr = scrab_arr.slice(0,6);
+    
+    let country_arr:any[] = [];
+    if(checkItems.size){
+      country_arr = Array.from(checkItems).sort((a, b) => a - b);
+    }
+
+    // 검색값 없을때
+    if(true){
+
+    }
+    console.log(scrab_arr);
+    setScrab(scrab_arr);
+
+    setPage(1);
+    // 헤더
+    setHeadLine(headLine ? headLine : "");
+    setCountry(checkItems.size ? country_arr : []);
+    setDate(startDate ? startDate : null);
+    setPopup(false);
+  }
+
+  const SearchBtn = (e:React.MouseEvent<HTMLInputElement>) => {
+    if(Tab){
+      searchPost();
+    } else {
+      searchScrab();
+    }
   }
 
   useEffect(()=> {

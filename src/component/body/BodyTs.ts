@@ -4,7 +4,7 @@ export const BodyStyle = styled.div`
   background-color: #F0F1F4;
   padding: 20px;
   min-height: calc(100vh - 60px); 
-  border-top: 1px solid #C4C4C4;
+  border-top: 1px solid #C4C4C4;  
 `;
 
 export const PostStyle = styled.div`
@@ -22,13 +22,26 @@ export const PostStyle = styled.div`
   }
 `;
 export const PostHead = styled.div`
-display:flex;
-justify-content: space-between;
+  display:flex;
+  justify-content: space-between;
+
+  & > img {
+    margin-top: 8px;
+  }
 `;
 
 export const PostTitle = styled.div`
-  font-size: 21px;
-  color: #000000;
+& > span {
+    font-size: 21px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* 표시할 최대 줄 수 */
+    -webkit-box-orient: vertical;
+    color: #000000;
+    text-overflow: ellipsis;  
+    overflow: hidden;            
+    max-width: 455px;
+    max-height: 60px;
+  }
 `;
 export const PostSub = styled.div`
   display: flex;
@@ -39,6 +52,14 @@ export const PostInfo = styled.div`
   display:flex;
   font-size: 13px;
   gap: 8px;
+
+  & > span {
+    text-overflow: ellipsis;  
+    white-space: nowrap;
+    overflow: hidden;            
+    max-width: 170px;
+    max-height: 100px;
+  }
 `;
 export const PostDate = styled.div`
   color: #6D6D6D;

@@ -4,12 +4,15 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface PostState {
   Posts: any[];
+  ScrabSlice: any[];
   Tab: Boolean;
   Popup: Boolean;
   setTab: (data: Boolean) => void;
   setPopup: (data: Boolean) => void;
   setPostData: (data: any[]) => void;
   resetPostData: (data: any[]) => void;
+  setScrab: (data: any[]) => void;
+  setScrabSlice: (data: any[]) => void;
   hHeadLine: string;
   hDate: Date | null;
   hCountry: any[];
@@ -26,6 +29,7 @@ interface PostState {
 }
 export const useStore = create<PostState>((set) => ({
   Posts: [],
+  ScrabSlice: [],
   Tab: true,
   Popup: false,
   hHeadLine: "",
@@ -54,6 +58,17 @@ export const useStore = create<PostState>((set) => ({
   resetPostData: (data) => { // 검색시 초기화
     set((state) => ({
       Posts: [...data]
+    }));
+  },
+  setScrab: (data) => { // 검색시 6개만 넣어주는용
+    set((state) => ({
+      ScrabSlice: [...data]
+    }));
+  },
+  setScrabSlice: (data) => { // 무한스크롤로 6개씩 불러오는용
+    console.log(data);
+    set((state) => ({
+      ScrabSlice: [...state.ScrabSlice, ...data]
     }));
   },
   setHeadLine: (data) => {

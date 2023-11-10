@@ -2,9 +2,9 @@ import React, { FC, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 export interface IPopupInputProps {
-    // onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    setHeadLine: React.Dispatch<React.SetStateAction<string>>;
-    headLine: string;
+  // onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  setHeadLine: React.Dispatch<React.SetStateAction<string>>;
+  headLine: string;
 }
 
 export const PopupFieldInput = styled.input`
@@ -23,17 +23,21 @@ export const PopupFieldInput = styled.input`
   }
 `;
 
-const PopupInput:FC<IPopupInputProps> =  (props: IPopupInputProps) => {
-    const { headLine, setHeadLine } = props;
-    
-    const onInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setHeadLine(e.target.value);
-      }, [setHeadLine]);
-    // string만 체크
-    
-    return (
-        <PopupFieldInput value={headLine} onChange={onInput} id='input1' placeholder='검색하실 헤드라인을 입력해주세요.' />
-    );
+const PopupInput: FC<IPopupInputProps> = (props: IPopupInputProps) => {
+  const { headLine, setHeadLine } = props;
+
+  const onInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    const regex = /^[A-Za-z가-힣]*$/;
+
+    if (regex.test(inputValue)) {
+      setHeadLine(e.target.value);
+    }
+  }, [setHeadLine]);
+
+  return (
+    <PopupFieldInput value={headLine} onChange={onInput} id='input1' placeholder='검색하실 헤드라인을 입력해주세요.' />
+  );
 }
 
 

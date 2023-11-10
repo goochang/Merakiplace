@@ -15,8 +15,11 @@ export const HeadStyle = styled.div`
   font-size: 21px;
   color: #495057;
   height: 60px;
-`;
-export const HeadMenu = styled.div<{isactive:number}>`
+
+  `;
+  export const HeadMenu = styled.div<{isactive:number}>`
+  max-width: 200px;
+  overflow: hidden;
   border: 1px solid ${props => (props.isactive ? "#82B0F4" :"#C4C4C4")};
   border-radius: 30px;
   margin-right:12px;
@@ -25,9 +28,13 @@ export const HeadMenu = styled.div<{isactive:number}>`
   color: ${props => (props.isactive ? "#3478F6" :"#6D6D6D")};
   display: flex;
   align-items: center;
-
+  cursor: pointer;
+  
   span {
     margin-left: 4px;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis; 
   }
   
   &:last-child {

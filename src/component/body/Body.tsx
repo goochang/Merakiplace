@@ -6,6 +6,8 @@ import { useInView } from 'react-intersection-observer';
 import star from "../../assets/img/star.png";
 import star2 from "../../assets/img/star-fill.png";
 import NoScrab from './NoScrab';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export interface BodyProps {
   data: {},
@@ -14,41 +16,53 @@ const Body: FC = () => {
 
   const { useEffect, useState } = React;
   const [List, setList] = useState<any[]>([]);
-  const { Tab, Posts, hPage, sPage, hHeadLine, hDate, hCountry, sHeadLine, sDate, sCountry,
-    setPageUp, setPostData, resetPostData } = useStore();
+  const { Tab, Posts, hPage, sPage, hHeadLine, hDate, hCountry, sHeadLine, sDate, sCountry, ScrabSlice,
+    setPageUp, setPostData, resetPostData, setScrab, setScrabSlice } = useStore();
   const Scrabs = useStorePersist(state => state.Scrabs);
   const setScrabsData = useStorePersist(state => state.setScrabsData);
-  const [ScrabSlice, setScrabSlice] = useState<any[]>([]);
+  // const [ScrabSlice, setScrabSlice] = useState<any[]>([]);
   const [ref, inView] = useInView({
     // triggerOnce: false, // 한 번만 트리거하고 그 이후에는 관찰 중지
   });
   const [initialized, setInitialized] = useState(false);
   const checkListENG = ["South Korea", "China", "Japan", "United States", "North Korea", "Russia", "France", "United Kingdom"];
 
-  function ScrabLoadMore(){
+  function ScrabLoad(){
     const arr_length = ScrabSlice.length;
-    const slicedScrabs:any[] = Scrabs.slice(arr_length, arr_length+6);
-    setScrabSlice([...ScrabSlice, ...slicedScrabs]);
+    const slicedScrabs:any[] = Scrabs.slice(0, (sPage*6));
+    setScrab(slicedScrabs);
   }
-  // nyt search api 호출
-  useEffect(() => {
-    if (!initialized) {
-      fetch('https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=9vAymAHOJfBxQa85OJzPyu8P7wTkvpPY', {
-        method: "GET"
-      }).then(res => res.json()).then(res => {
-        console.log(res.response);
-        if (res.response && res.response.docs) {
-          resetPostData(res.response.docs);
+  function ScrabLoadMore(){
+    let scrab_arr = [];
+    let target_arr = Scrabs; // 대상 배열
+
+    if(sHeadLine){
+      scrab_arr = target_arr.filter((scrab) => {
+        if (scrab.headline && scrab.headline.main) {
+          return scrab.headline.main.includes(sHeadLine);
         }
+        return false; 
       });
-
-      ScrabLoadMore();
-
-      setInitialized(true);
     }
-    console.log(Posts);
+    if(sDate){
+      scrab_arr = target_arr.filter((scrab) => {
+        if (scrab.pub_date) {
+          const date1 = new Date(scrab.pub_date);
+          const date2 = new Date(sDate);
+          return (date1.getFullYear() === date2.getFullYear() &&
+          date1.getMonth() === date2.getMonth() &&
+          date1.getDate() === date2.getDate());
+        }
+        return false; 
+      });
+    }
 
-  }, []);
+    const arr = (sHeadLine || sDate) ? scrab_arr : Scrabs;
+    const arr_length = ScrabSlice.length;
+    const slicedScrabs:any[] = arr.slice(arr_length, (sPage * 6));
+    // const slicedScrabs:any[] = arr.slice((sPage-1) * 6, (sPage * 6));
+    setScrabSlice(slicedScrabs);
+  }
 
   let day = ["일", "월", "화", "수", "목", "금", "토"];
   let dateFormatter = (date: String) => {
@@ -81,10 +95,12 @@ const Body: FC = () => {
       if (headLine) {
         url+= "&";   
       }
+      url+= "(";  
       country.forEach((val, index) => {
         if (index > 0) url += " OR ";
-        url += `country:${checkListENG[val]}`;
+        url += `glocations:("${checkListENG[val]}")`;
       });
+      url+= ")";  
     }
     if (date) {
       if(country && country.length){
@@ -104,8 +120,28 @@ const Body: FC = () => {
       }
     });
   }
+
+  // nyt search api 호출
+  useEffect(() => {
+    if (!initialized) {
+      fetch('https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=9vAymAHOJfBxQa85OJzPyu8P7wTkvpPY', {
+        method: "GET"
+      }).then(res => res.json()).then(res => {
+        console.log(res.response);
+        if (res.response && res.response.docs) {
+          resetPostData(res.response.docs);
+        }
+      });
+
+      
+      setInitialized(true);
+    }
+  }, []);
+
   useEffect(() => {
     console.log(inView);
+    console.log(Scrabs);
+    console.log(ScrabSlice);
     if (inView) {
       setPageUp();
       if(Tab){
@@ -115,17 +151,29 @@ const Body: FC = () => {
       }
       
     }
-    console.log(Posts);
-    console.log(Scrabs);
-
   }, [inView]);
+  useEffect(() => {
+    if(!Tab) ScrabLoad();
+  }, [Tab]);
 
-  const ScrabClick = (e: React.MouseEvent, post: any, index: number) => {
+  const ScrabClick = (e: React.MouseEvent, post: any, index: number, isIn: boolean) => {
     setScrabsData(post);
+    if(isIn){
+      setScrab(ScrabSlice.filter((scrab: { _id: any; }) => scrab._id !== post._id));
+      toast.info("스크랩이 취소되었습니다.", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+    } else {
+      toast.info("스크랩 되었습니다.", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+
+    }
   }
 
   return (
     <BodyStyle>
+      <ToastContainer />
       <div>
         {
           Tab ? (
@@ -137,8 +185,10 @@ const Body: FC = () => {
               return (post &&
                 <PostStyle key={index} ref={index === Posts.length - 1 ? ref : null}>
                   <PostHead>
-                    <PostTitle>{post.headline && post.headline.main}</PostTitle>
-                    <img onClick={(e) => { ScrabClick(e, post, index) }} src={starImg} width={"16px"} height={"16px"} />
+                    <PostTitle  onClick={()=>{ window.location.href = post.web_url; }}>
+                      <span>{post.headline && post.headline.main}</span>
+                    </PostTitle>
+                    <img onClick={(e) => { ScrabClick(e, post, index, isInArray) }} src={starImg} width={"16px"} height={"16px"} />
                   </PostHead>
                   <PostSub>
                     <PostInfo>
@@ -159,8 +209,10 @@ const Body: FC = () => {
               return (post &&
                 <PostStyle key={index} ref={index === ScrabSlice.length - 1 ? ref : null}>
                   <PostHead>
-                    <PostTitle>{post.headline && post.headline.main}</PostTitle>
-                    <img onClick={(e) => { ScrabClick(e, post, index) }} src={starImg} width={"16px"} height={"16px"} />
+                    <PostTitle  onClick={()=>{ window.location.href = post.web_url; }}>
+                      {post.headline && post.headline.main}
+                    </PostTitle>
+                    <img onClick={(e) => { ScrabClick(e, post, index, isInArray) }} src={starImg} width={"16px"} height={"16px"} />
                   </PostHead>
                   <PostSub>
                     <PostInfo>
