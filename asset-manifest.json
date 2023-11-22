@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/merakiplace/static/css/main.e0710e6b.css",
+    "main.js": "/merakiplace/static/js/main.ab8ee0b8.js",
+    "static/js/787.f99c86d6.chunk.js": "/merakiplace/static/js/787.f99c86d6.chunk.js",
+    "index.html": "/merakiplace/index.html",
+    "main.e0710e6b.css.map": "/merakiplace/static/css/main.e0710e6b.css.map",
+    "main.ab8ee0b8.js.map": "/merakiplace/static/js/main.ab8ee0b8.js.map",
+    "787.f99c86d6.chunk.js.map": "/merakiplace/static/js/787.f99c86d6.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e0710e6b.css",
+    "static/js/main.ab8ee0b8.js"
+  ]
+}
