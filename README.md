@@ -1,5 +1,5 @@
 # 메라키 플레이스 과제 전형
-
+### [배포리크](https://goochang.github.io/Merakiplace/)
 ## 기능 목록
 ### 헤더
 - [x] 헤더 표시
