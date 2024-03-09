@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/merakiplace/static/css/main.e0710e6b.css",
-    "main.js": "/merakiplace/static/js/main.ab8ee0b8.js",
-    "static/js/787.f99c86d6.chunk.js": "/merakiplace/static/js/787.f99c86d6.chunk.js",
-    "index.html": "/merakiplace/index.html",
-    "main.e0710e6b.css.map": "/merakiplace/static/css/main.e0710e6b.css.map",
-    "main.ab8ee0b8.js.map": "/merakiplace/static/js/main.ab8ee0b8.js.map",
-    "787.f99c86d6.chunk.js.map": "/merakiplace/static/js/787.f99c86d6.chunk.js.map"
+    "main.css": "/Merakiplace/static/css/main.e0710e6b.css",
+    "main.js": "/Merakiplace/static/js/main.5b93866b.js",
+    "static/js/787.f99c86d6.chunk.js": "/Merakiplace/static/js/787.f99c86d6.chunk.js",
+    "index.html": "/Merakiplace/index.html",
+    "main.e0710e6b.css.map": "/Merakiplace/static/css/main.e0710e6b.css.map",
+    "main.5b93866b.js.map": "/Merakiplace/static/js/main.5b93866b.js.map",
+    "787.f99c86d6.chunk.js.map": "/Merakiplace/static/js/787.f99c86d6.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e0710e6b.css",
-    "static/js/main.ab8ee0b8.js"
+    "static/js/main.5b93866b.js"
   ]
 }
